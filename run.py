@@ -4,7 +4,7 @@ import websocket
 import alarm
 import trade
 
-SOCKET = "wss://fstream.binance.com/ws/btcusdt@kline_1m"
+SOCKET = "wss://fstream.binance.com/ws/btcusdt@kline_5m"
 
 telebot = alarm.TelegramBot()
 bn = trade.Trade(telebot)
