@@ -1,0 +1,5 @@
+numpy
+TA-Lib
+python-binance
+websocket_client
+python-telegram-bot

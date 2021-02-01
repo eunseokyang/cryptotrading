@@ -10,8 +10,8 @@ import util
 import config
 
 RSI_PERIOD = 14
-RSI_OVERBOUGHT = 60
-RSI_OVERSOLD = 40
+RSI_OVERBOUGHT = 70
+RSI_OVERSOLD = 30
 RSI_MID = 50
 SYMBOL = 'BTCUSDT'
 LEVERAGE = 1
@@ -33,7 +33,7 @@ class Trade:
         self.check_balance()
         self.initial_balance = self.balance
 
-        self.telebot.send_msg(f'initial balance: ${self.initial_balance}')
+        self.telebot.send_msg(f'initial balance: ${self.initial_balance:.2f}')
 
         # alert stop
         self.alert_stop = False
@@ -98,8 +98,8 @@ class Trade:
         quantity = "{:0.0{}f}".format(qty, 3)
         
         try:
-            print(f"[Open] {msg} ${qty*self.mark_price}, quantity: {quantity}, curr: {self.mark_price}")
-            self.telebot.send_msg(f"[Open] {msg} ${qty*self.mark_price}, quantity: {quantity}, curr: {self.mark_price}")
+            print(f"[Open] {msg} ${qty*self.mark_price:.2f}, quantity: {quantity}, curr: {self.mark_price:.2f}")
+            self.telebot.send_msg(f"[Open] {msg} ${qty*self.mark_price:.2f}, quantity: {quantity}, curr: {self.mark_price:.2f}")
             
             order = self.client.futures_create_order(
                 symbol=symbol,
@@ -123,8 +123,8 @@ class Trade:
     def close_order(self, symbol, side, order_type, qty):
         quantity = "{:0.0{}f}".format(qty, 3)
         try:
-            print(f"[Close] {side} ${qty*self.mark_price}, quantity: {quantity}, curr: {self.mark_price}")
-            self.telebot.send_msg(f"[Close] {side} ${qty*self.mark_price}, quantity: {quantity}, curr: {self.mark_price}")
+            print(f"[Close] {side} ${qty*self.mark_price:.2f}, quantity: {quantity}, curr: {self.mark_price:.2f}")
+            self.telebot.send_msg(f"[Close] {side} ${qty*self.mark_price:.2f}, quantity: {quantity}, curr: {self.mark_price:.2f}")
 
             order = self.client.futures_create_order(
                 symbol=symbol,
