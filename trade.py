@@ -33,7 +33,7 @@ class Trade:
         self.check_balance()
         self.initial_balance = self.balance
 
-        print(f'initial balance: ${self.initial_balance}')
+        self.telebot.send_msg(f'initial balance: ${self.initial_balance}')
 
         # alert stop
         self.alert_stop = False
@@ -152,11 +152,11 @@ class Trade:
         # not in position
         if self.position_amount == 0:
             if (self.prev_rsi >= RSI_OVERBOUGHT) and (self.curr_rsi < RSI_OVERBOUGHT):
-                print('buy short')
+                # buy short
                 self.open_order(SYMBOL, SIDE_SELL, "MARKET", "SHORT")
                 self.stop_market(SYMBOL, SIDE_BUY, "STOP_MARKET", self.entry_price * (1 + LOSS_CUT), -self.position_amount)
             elif (self.prev_rsi <= RSI_OVERSOLD) and (self.curr_rsi > RSI_OVERSOLD):
-                print('buy long')
+                # buy long
                 self.open_order(SYMBOL, SIDE_BUY, "MARKET", "LONG")
                 self.stop_market(SYMBOL, SIDE_SELL, "STOP_MARKET", self.entry_price * (1 - LOSS_CUT), self.position_amount)
         # long position
@@ -194,13 +194,13 @@ class Trade:
         now = time.time()
         if (self.position_amount > 0) and (now - self.last_opening_order_time > 45*60):
             if (self.mark_price - self.entry_price) / self.entry_price < 0.01:
-                print('close long position due to low profit')
+                # close long position due to low profit
                 self.close_order(SYMBOL, SIDE_SELL, "MARKET", self.position_amount)
                 self.cancel_open_orders()
 
         elif (self.position_amount < 0) and (now - self.last_opening_order_time > 45*60):
             if (self.entry_price - self.mark_price) / self.entry_price < 0.01:
-                print('close short position due to low profit')
+                # close short position due to low profit
                 self.close_order(SYMBOL, SIDE_BUY, "MARKET", -self.position_amount)
                 self.cancel_open_orders()
 
