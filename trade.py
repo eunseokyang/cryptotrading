@@ -83,8 +83,8 @@ class Trade:
         self.check_balance()
 
         # 0.99 to care of delay
-        qty = self.balance / self.mark_price * 0.99
-        qty = util.round_down(qty, 3)  
+        qty = self.balance / self.mark_price * LEVERAGE * 0.99
+        qty = util.round_down(qty, 3)
         quantity = "{:0.0{}f}".format(qty, 3)
         
         try:
@@ -182,13 +182,13 @@ class Trade:
 
     def manage_risk(self):
         now = time.time()
-        if (self.position_amount > 0) and (now - self.last_opening_order_time > PROFIT_MIN*60):
+        if (self.position_amount > 0) and (now - self.last_opening_order_time > PROFIT_MINUTE*60):
             if (self.mark_price - self.entry_price) / self.entry_price < PROFIT_CUT:
                 # close long position due to low profit
                 self.close_order(SYMBOL, SIDE_SELL, "MARKET", self.position_amount)
                 self.cancel_open_orders()
 
-        elif (self.position_amount < 0) and (now - self.last_opening_order_time > PROFIT_MIN*60):
+        elif (self.position_amount < 0) and (now - self.last_opening_order_time > PROFIT_MINUTE*60):
             if (self.entry_price - self.mark_price) / self.entry_price < PROFIT_CUT:
                 # close short position due to low profit
                 self.close_order(SYMBOL, SIDE_BUY, "MARKET", -self.position_amount)
