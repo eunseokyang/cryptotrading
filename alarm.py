@@ -5,8 +5,8 @@ import config
 
 class TelegramBot:
     def __init__(self):
-        # self.updater = Updater(config.TG_API)
-        self.updater = Updater(config.TG_TEST_API)
+        self.updater = Updater(config.TG_API)
+        # self.updater = Updater(config.TG_TEST_API)
         self.dispatcher = self.updater.dispatcher
 
         self.stop_handler = CommandHandler('stop', self.stop)
