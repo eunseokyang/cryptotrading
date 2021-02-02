@@ -8,16 +8,7 @@ from binance.client import Client
 
 import util
 import config
-
-RSI_PERIOD = 14
-RSI_OVERBOUGHT = 70
-RSI_OVERSOLD = 30
-RSI_MID = 50
-SYMBOL = 'BTCUSDT'
-LEVERAGE = 1
-LOSS_CUT = 0.01
-MAX_CLOSE_LENGTH = 500
-ALERT_THRESHOLD = 0.15
+from params import *
 
 class Trade:
     def __init__(self, telebot):
@@ -32,7 +23,6 @@ class Trade:
         # initial balance check
         self.check_balance()
         self.initial_balance = self.balance
-
         self.telebot.send_msg(f'initial balance: ${self.initial_balance:.2f}')
 
         # alert stop
@@ -192,14 +182,14 @@ class Trade:
 
     def manage_risk(self):
         now = time.time()
-        if (self.position_amount > 0) and (now - self.last_opening_order_time > 45*60):
-            if (self.mark_price - self.entry_price) / self.entry_price < 0.01:
+        if (self.position_amount > 0) and (now - self.last_opening_order_time > PROFIT_MIN*60):
+            if (self.mark_price - self.entry_price) / self.entry_price < PROFIT_CUT:
                 # close long position due to low profit
                 self.close_order(SYMBOL, SIDE_SELL, "MARKET", self.position_amount)
                 self.cancel_open_orders()
 
-        elif (self.position_amount < 0) and (now - self.last_opening_order_time > 45*60):
-            if (self.entry_price - self.mark_price) / self.entry_price < 0.01:
+        elif (self.position_amount < 0) and (now - self.last_opening_order_time > PROFIT_MIN*60):
+            if (self.entry_price - self.mark_price) / self.entry_price < PROFIT_CUT:
                 # close short position due to low profit
                 self.close_order(SYMBOL, SIDE_BUY, "MARKET", -self.position_amount)
                 self.cancel_open_orders()
