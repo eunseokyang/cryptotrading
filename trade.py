@@ -182,17 +182,24 @@ class Trade:
 
     def manage_risk(self):
         now = time.time()
+        if self.half_open:
+            cut = HALF_PROFIT_CUT
+        else:
+            cut = PROFIT_CUT
+            
         if (self.position_amount > 0) and (now - self.last_opening_order_time > PROFIT_MINUTE*60):
-            if (self.mark_price - self.entry_price) / self.entry_price < PROFIT_CUT:
+            if (self.mark_price - self.entry_price) / self.entry_price < cut:
                 # close long position due to low profit
                 self.close_order(SYMBOL, SIDE_SELL, "MARKET", self.position_amount)
                 self.cancel_open_orders()
+                self.half_open = False
 
         elif (self.position_amount < 0) and (now - self.last_opening_order_time > PROFIT_MINUTE*60):
-            if (self.entry_price - self.mark_price) / self.entry_price < PROFIT_CUT:
+            if (self.entry_price - self.mark_price) / self.entry_price < cut:
                 # close short position due to low profit
                 self.close_order(SYMBOL, SIDE_BUY, "MARKET", -self.position_amount)
                 self.cancel_open_orders()
+                self.half_open = False
 
     def initialize_rsi(self, time_last):
         # 1 min or 5 mins

@@ -3,10 +3,11 @@ import json
 import websocket
 
 import alarm
+import config
 
 SOCKET = "wss://fstream.binance.com/ws/btcusdt@kline_1m"
 
-telebot = alarm.TelegramBot()
+telebot = alarm.TelegramBot(config.TG_TEST_API, config.TG_ID)
 
 def on_open(ws):
     print("opened connection")

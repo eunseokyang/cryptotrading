@@ -4,10 +4,11 @@ import websocket
 
 import alarm
 import trade
+import config
 
 SOCKET = "wss://fstream.binance.com/ws/btcusdt@kline_5m"
 
-telebot = alarm.TelegramBot()
+telebot = alarm.TelegramBot(config.TG_API, config.TG_ID)
 bn = trade.Trade(telebot)
 
 def on_open(ws):
